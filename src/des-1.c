@@ -17,19 +17,19 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services){
   }
 
   /* vector of service completions (departures) */
-  double* c = calloc(n+1,sizeof(double));
+  double* c = (double*)calloc(n+1,sizeof(double));
   c[0] = 0.;
 
   /* vector of arrivals (a) and services times (s) */
-  double* a = calloc(n+1,sizeof(double));
-  double* s = calloc(n+1,sizeof(double));
+  double* a = (double*)calloc(n+1,sizeof(double));
+  double* s = (double*)calloc(n+1,sizeof(double));
 
   memcpy(a+1,REAL(arrivals),sizeof(double)*n);
   memcpy(s+1,REAL(services),sizeof(double)*n);
 
   /* departure times (the output) */
   SEXP d = PROTECT(allocVector(REALSXP,n));
-  double* d_ptr = REAL(d);
+  double* d_i = REAL(d); /* d_i is the departure time of job i */
 
   int i = 0;
 
@@ -40,14 +40,14 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services){
 
     if(a_i < c[i-1]){
       /* calculate delay for job i */
-      d_ptr[i-1] = c[i-1] - a_i;
+      d_i[i-1] = c[i-1] - a_i;
     } else {
       /* job i has no delay */
-      d_ptr[i-1] = 0.;
+      d_i[i-1] = 0.;
     }
 
     /* calculate departure time for job i */
-    c[i] = a_i + d_ptr[i-1] + s[i];
+    c[i] = a_i + d_i[i-1] + s[i];
   }
 
   /* free memory/unprotect and return */
