@@ -58,3 +58,89 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services){
 
   return d;
 };
+
+
+SEXP des_ssq1_C(SEXP df){
+
+  /* sanity checks */
+  if(!Rf_isFrame(df) || Rf_length(df) != 2){
+    error("'df' must be a data.frame object with 2 columns for arrivals and service times\n");
+  }
+
+  SEXP arrival_in = PROTECT(VECTOR_ELT(df, 0));
+  SEXP service_in = PROTECT(VECTOR_ELT(df, 1));
+
+  double* a_ptr = REAL(arrival_in);
+  double* s_ptr = REAL(service_in);
+
+  if(!Rf_isReal(arrival_in) || !Rf_isReal(service_in)){
+    error("arrivals and service times must be numeric (float) values\n");
+  }
+
+  /* number of jobs */
+  int n = Rf_length(arrival_in);
+
+  /* variables for job i */
+  double a_i = 0.; /* arrival time */
+  double d_i = 0.; /* delay in queue */
+  double s_i = 0.; /* service time */
+  double w_i = 0.; /* wait (delay + service) */
+  double c_i = 0.; /* departure time */
+
+  /* time-averaged statistics */
+  struct {                         /* sum of ...           */
+    double d;                      /*   delay times        */
+    double w;                      /*   wait times         */
+    double s;                      /*   service times      */
+    double r;                      /*   interarrival times */
+  } sum = {0.0, 0.0, 0.0, 0.0};
+
+  /* trace-driven simulation */
+  for(int i=0; i<n; i++){
+
+    a_i = a_ptr[i];
+
+    if(a_i < c_i){
+      /* delay in queue */
+      d_i = c_i - a_i;
+    } else {
+      /* no delay */
+      d_i = 0.;
+    }
+
+    s_i = s_ptr[i];
+    w_i = d_i + s_i;
+    c_i = a_i + w_i; /* time of departure */
+
+    sum.d += d_i;
+    sum.w += w_i;
+    sum.s += s_i;
+  }
+
+  sum.d /= (double)n;
+  sum.w /= (double)n;
+  sum.s /= (double)n;
+  sum.r = a_i / (double)n;
+
+
+//   while (!feof(fp)) {
+//   index++;
+//   arrival      = GetArrival(fp);
+//   if (arrival < departure)
+//     delay      = departure - arrival;        /* delay in queue    */
+//   else
+//     delay      = 0.0;                        /* no delay          */
+//   service      = GetService(fp);
+//   wait         = delay + service;
+//   departure    = arrival + wait;             /* time of departure */
+//   sum.delay   += delay;
+//   sum.wait    += wait;
+//   sum.service += service;
+// }
+// sum.interarrival = arrival - START;
+
+  // Rprintf("rows: %d\n",n);
+
+  UNPROTECT(2);
+  return R_NilValue;
+};

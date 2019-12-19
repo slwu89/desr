@@ -26,3 +26,10 @@
 des1_2_1 <- function(a,s){
   .Call(des1_2_1_C,as.numeric(a),as.numeric(s))
 }
+
+#' test ssq1
+#' @useDynLib desr des_ssq1_C
+#' @export
+des_ssq1 <- function(df){
+  .Call(des_ssq1_C,df)
+}

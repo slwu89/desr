@@ -25,4 +25,6 @@
 /* algorithm 1.2.1: calculate delays under FIFO with finite capacity */
 SEXP des1_2_1_C(SEXP arrivals, SEXP services);
 
+SEXP des_ssq1_C(SEXP df);
+
 #endif
