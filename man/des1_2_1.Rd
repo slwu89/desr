@@ -16,6 +16,7 @@ d vector of delay times (how long each job waits in the queue prior to begin of 
 }
 \description{
 If the arrival times a1, a2, . . . and service times s1, s2, . . . are known and if the server is initially idle, then this algorithm computes the delays d1,d2,... in a single-server FIFO service node with infinite capacity.
+This algorithm computes the departure times c1, c2, . . . as a by-product of the computation.
 }
 \examples{
 a <- c(15,47,71,111,123,152,166,226,310,320)

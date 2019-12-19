@@ -1,0 +1,51 @@
+---
+title: "Discrete Event Simulation Ch. 1: Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Discrete Event Simulation Ch. 1: Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Models
+
+## 1.2 A Single Server Queue
+
+When considering queues we need to know the _queue discipline_, that is, given a set of jobs that have queued up and the order in which each job arrived, how do we pick which job gets serviced first? There are four main types:
+
+  * *FIFO*: first in, first out (like a conveyor belt for jobs)
+  * *LIFO*: last in, first out (like a stack in computer science)
+  * *SIRO*: service in random order
+  * Priority: do the shortest job first (SJF), or the one with shortest processing time (SPT)
+  
+### 1.2.2 Specification Model
+
+Jobs in the system have 6 variables:
+  
+  * $a_{i}$: _arrival time_ (when shows up and gets added to the queue)
+  * $d_{i} \geq 0$: _delay_ (how long it waits in the queue before processing starts)
+  * $b_{i}=a_{i}+d_{i}$: time that job $i$ begins to get processed
+  * $s_{i}>0$: _service time_ (how long processing takes)
+  * $w_{i}=d_{i}+s_{i}$: _wait_ (the total time the job is in the system; also called sojurn time, etc.)
+  * $c_{i}=a_{i}+w_{i}$: _departure time_ (time job $i$ leaves the system)
+  
+Please note that variables $\{a_{i},b_{i},c_{i}\}$ are absolute (calendar) times, while $\{d_{i},s_{i},w_{i}\}$ are relative (internal to job $i$).
+
+### Algorithm 1.2.1
+
+Given a set of $\{a_{1},a_{2},...,a_{n}\}$ arrival times and $\{s_{1},s_{2},...,s_{n}\}$ service times, the delays $\{d_{1},d_{2},...,d_{n}\}$ can be computed. The algorithm `des1_2_1` assumes a single-server FIFO system with infinite capacity.
+
+```{r}
+library(desr)
+
+a <- c(15,47,71,111,123,152,166,226,310,320)
+s <- c(43,36,34,30,38,40,31,29,36,30)
+des1_2_1(a,s)
+```

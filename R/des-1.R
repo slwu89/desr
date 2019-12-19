@@ -10,6 +10,7 @@
 #' algorithm 1.2.1: calculate delays under FIFO with finite capacity
 #'
 #' If the arrival times a1, a2, . . . and service times s1, s2, . . . are known and if the server is initially idle, then this algorithm computes the delays d1,d2,... in a single-server FIFO service node with infinite capacity.
+#' This algorithm computes the departure times c1, c2, . . . as a by-product of the computation.
 #'
 #' @param a vector of arrival times
 #' @param s vector of service times
