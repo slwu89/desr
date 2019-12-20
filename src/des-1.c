@@ -126,8 +126,8 @@ SEXP des_ssq1_C(SEXP df){
   SEXP result = PROTECT(Rf_allocVector(REALSXP, 4));
   REAL(result)[0] = sum.r;
   REAL(result)[1] = sum.s;
-  REAL(result)[3] = sum.d;
-  REAL(result)[4] = sum.w;
+  REAL(result)[2] = sum.d;
+  REAL(result)[3] = sum.w;
 
   SEXP nms = PROTECT(Rf_allocVector(STRSXP, 4));
   Rf_namesgets(result, nms);
