@@ -2,10 +2,26 @@
 % Please edit documentation in R/des-1.R
 \name{des_ssq1}
 \alias{des_ssq1}
-\title{test ssq1}
+\title{program ssq1: a computational model of a single-server FIFO service node with infinite capacity}
 \usage{
 des_ssq1(df)
 }
+\arguments{
+\item{df}{a \code{data.frame} with 2 columns: arrival and service times (in that order)}
+}
+\value{
+a named vector with job-averaged interarrival time (r), service time (s), delay (d), and wait (w)
+}
 \description{
-test ssq1
+This program simulates a single-server FIFO service node using arrival
+times and service times read from a \code{data.frame}.  The server is assumed
+to be idle when the first job arrives.  All jobs are processed completely
+so that the server is again idle at the end of the simulation.   The
+output statistics are the average interarrival time, average service
+time, the average delay in the queue, and the average wait in the service
+node.
+}
+\examples{
+data(ssq1dat)
+des_ssq1(ssq1dat)
 }

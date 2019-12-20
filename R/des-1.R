@@ -27,7 +27,22 @@ des1_2_1 <- function(a,s){
   .Call(des1_2_1_C,as.numeric(a),as.numeric(s))
 }
 
-#' test ssq1
+#' program ssq1: a computational model of a single-server FIFO service node with infinite capacity
+#'
+#' This program simulates a single-server FIFO service node using arrival
+#' times and service times read from a \code{data.frame}.  The server is assumed
+#' to be idle when the first job arrives.  All jobs are processed completely
+#' so that the server is again idle at the end of the simulation.   The
+#' output statistics are the average interarrival time, average service
+#' time, the average delay in the queue, and the average wait in the service
+#' node.
+#'
+#' @param df a \code{data.frame} with 2 columns: arrival and service times (in that order)
+#'
+#' @return a named vector with job-averaged interarrival time (r), service time (s), delay (d), and wait (w)
+#' @examples
+#' data(ssq1dat)
+#' des_ssq1(ssq1dat)
 #' @useDynLib desr des_ssq1_C
 #' @export
 des_ssq1 <- function(df){

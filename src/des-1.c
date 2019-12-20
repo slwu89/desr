@@ -60,6 +60,7 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services){
 };
 
 
+/* program ssq1: a computational model of a single-server FIFO service node with infinite capacity */
 SEXP des_ssq1_C(SEXP df){
 
   /* sanity checks */
@@ -122,25 +123,19 @@ SEXP des_ssq1_C(SEXP df){
   sum.s /= (double)n;
   sum.r = a_i / (double)n;
 
+  SEXP result = PROTECT(Rf_allocVector(REALSXP, 4));
+  REAL(result)[0] = sum.r;
+  REAL(result)[1] = sum.s;
+  REAL(result)[3] = sum.d;
+  REAL(result)[4] = sum.w;
 
-//   while (!feof(fp)) {
-//   index++;
-//   arrival      = GetArrival(fp);
-//   if (arrival < departure)
-//     delay      = departure - arrival;        /* delay in queue    */
-//   else
-//     delay      = 0.0;                        /* no delay          */
-//   service      = GetService(fp);
-//   wait         = delay + service;
-//   departure    = arrival + wait;             /* time of departure */
-//   sum.delay   += delay;
-//   sum.wait    += wait;
-//   sum.service += service;
-// }
-// sum.interarrival = arrival - START;
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP, 4));
+  Rf_namesgets(result, nms);
+  SET_STRING_ELT(nms, 0, mkChar("r"));
+  SET_STRING_ELT(nms, 1, mkChar("s"));
+  SET_STRING_ELT(nms, 2, mkChar("d"));
+  SET_STRING_ELT(nms, 3, mkChar("w"));
 
-  // Rprintf("rows: %d\n",n);
-
-  UNPROTECT(2);
-  return R_NilValue;
+  UNPROTECT(4);
+  return result;
 };
