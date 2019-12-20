@@ -35,7 +35,7 @@ des1_2_1 <- function(a,s){
 #' so that the server is again idle at the end of the simulation.   The
 #' output statistics are the average interarrival time, average service
 #' time, the average delay in the queue, and the average wait in the service
-#' node.
+#' node. 
 #'
 #' @param df a \code{data.frame} with 2 columns: arrival and service times (in that order)
 #'
