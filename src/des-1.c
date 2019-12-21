@@ -9,7 +9,11 @@
 
 #include "des-1.h"
 
-/* algorithm 1.2.1: calculate delays under FIFO with finite capacity */
+
+/* --------------------------------------------------------------------------------
+#   algorithm 1.2.1: calculate delays under FIFO with finite capacity
+-------------------------------------------------------------------------------- */
+
 SEXP des1_2_1_C(SEXP arrivals, SEXP services){
   int n = LENGTH(arrivals);
   if(LENGTH(services) != n){
@@ -60,7 +64,10 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services){
 };
 
 
-/* program ssq1: a computational model of a single-server FIFO service node with infinite capacity */
+/* --------------------------------------------------------------------------------
+#   program ssq1: a computational model of a single-server FIFO service node with infinite capacity
+-------------------------------------------------------------------------------- */
+
 SEXP des_ssq1_C(SEXP df){
 
   /* sanity checks */
@@ -137,5 +144,67 @@ SEXP des_ssq1_C(SEXP df){
   SET_STRING_ELT(nms, 3, mkChar("w"));
 
   UNPROTECT(4);
+  return result;
+};
+
+
+/* --------------------------------------------------------------------------------
+#   algorithm 1.3.1: compute discrete time evolution of inventory level for simple system (w/back ordering & no delivery lag)
+-------------------------------------------------------------------------------- */
+
+SEXP des1_3_1_C(SEXP demands, SEXP sR, SEXP SR){
+
+  int s = Rf_asInteger(sR);
+  int S = Rf_asInteger(SR);
+
+  int* d_ptr = INTEGER(demands);
+  int d;
+
+  int n = Rf_length(demands);
+
+  /* we will return the inventory level and orders */
+  int* l = (int*)calloc(n+1,sizeof(int));
+  int* o = (int*)calloc(n,sizeof(int));
+
+  l[0] = S;
+  int i = 0;
+
+  while(i < n){
+    i++;
+    if(l[i-1] < s){
+      o[i-1] = S - l[i-1];
+    } else {
+      o[i-1] = 0;
+    }
+    d = d_ptr[i-1];
+    l[i] = l[i-1] + o[i-1] - d;
+  }
+
+  i = n;
+  o[i-1] = S - l[i];
+  l[i] = S;
+
+  SEXP lout = PROTECT(Rf_allocVector(INTSXP,n));
+  SEXP oout = PROTECT(Rf_allocVector(INTSXP,n));
+
+  int* lout_ptr = INTEGER(lout);
+  int* oout_ptr = INTEGER(oout);
+
+  memcpy(lout_ptr,&l[1],sizeof(int)*n);
+  memcpy(oout_ptr,o,sizeof(int)*n);
+
+  SEXP result = PROTECT(Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(result,0,lout);
+  SET_VECTOR_ELT(result,1,oout);
+
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP, 2));
+  Rf_namesgets(result, nms);
+  SET_STRING_ELT(nms, 0, Rf_mkChar("l"));
+  SET_STRING_ELT(nms, 1, Rf_mkChar("o"));
+
+  UNPROTECT(4);
+  free(l);
+  free(o);
+
   return result;
 };

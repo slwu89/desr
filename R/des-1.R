@@ -35,7 +35,7 @@ des1_2_1 <- function(a,s){
 #' so that the server is again idle at the end of the simulation.   The
 #' output statistics are the average interarrival time, average service
 #' time, the average delay in the queue, and the average wait in the service
-#' node. 
+#' node.
 #'
 #' @param df a \code{data.frame} with 2 columns: arrival and service times (in that order)
 #'
@@ -47,4 +47,25 @@ des1_2_1 <- function(a,s){
 #' @export
 des_ssq1 <- function(df){
   .Call(des_ssq1_C,df)
+}
+
+#' algorithm 1.3.1: compute discrete time evolution of inventory level for simple system
+#'
+#' If the demands d1, d2, . . . are known then this algorithm computes the discrete time evolution of the inventory level for a simple (s, S) inventory system with back ordering and no delivery lag.
+#'
+#' @param demands vector of demands
+#' @param s minimum inventory level
+#' @param S maximum inventory level
+#'
+#' @return a list with \code{l} (inventory levels) and \code{o} (orders)
+#'
+#' @examples
+#' d <- c(30,15,25,15,45,30,25,15,20,35,20,30)
+#' s <- 20
+#' S <- 60
+#' des1_3_1(d,s,S)
+#' @useDynLib desr des1_3_1_C
+#' @export
+des1_3_1 <- function(demands,s,S){
+  .Call(des1_3_1_C,as.integer(demands),as.integer(s),as.integer(S))
 }

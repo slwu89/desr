@@ -28,4 +28,7 @@ SEXP des1_2_1_C(SEXP arrivals, SEXP services);
 /* program ssq1: a computational model of a single-server FIFO service node with infinite capacity */
 SEXP des_ssq1_C(SEXP df);
 
+/* algorithm 1.3.1: compute discrete time evolution of inventory level for simple system (w/back ordering & no delivery lag) */
+SEXP des1_3_1_C(SEXP demands, SEXP s, SEXP S);
+
 #endif
