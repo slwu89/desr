@@ -180,6 +180,7 @@ SEXP des1_3_1_C(SEXP demands, SEXP sR, SEXP SR){
     l[i] = l[i-1] + o[i-1] - d;
   }
 
+  /* terminal order to fill up inventory */
   i = n;
   o[i-1] = S - l[i];
   l[i] = S;
