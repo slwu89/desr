@@ -69,3 +69,25 @@ des_ssq1 <- function(df){
 des1_3_1 <- function(demands,s,S){
   .Call(des1_3_1_C,as.integer(demands),as.integer(s),as.integer(S))
 }
+
+#' program sis1: simulates a simple (s,S) inventory system using trace-driven demand
+#'
+#' This program simulates a simple (s,S) inventory system using demand read
+#' from vector input.  Backlogging is permitted and there is no delivery lag.
+#' The output statistics are the average demand and order per time interval
+#' (they should be equal), the relative frequency of setup and the time
+#' averaged held (+) and short (-) inventory levels.
+#'
+#' @param demands vector of demands
+#' @param s minimum inventory level
+#' @param S maximum inventory level
+#'
+#' @return a named vector with average demand, order, setup frequency, holding level, and shortage level
+#' @examples
+#' data(sis1dat)
+#' round(des_sis1(sis1dat$d,20,80),3)
+#' @useDynLib desr des_sis1_C
+#' @export
+des_sis1 <- function(demands,s,S){
+  .Call(des_sis1_C,as.integer(demands),as.integer(s),as.integer(S))
+}

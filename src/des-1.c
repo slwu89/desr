@@ -209,3 +209,88 @@ SEXP des1_3_1_C(SEXP demands, SEXP sR, SEXP SR){
 
   return result;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   program sis1: simulates a simple (s,S) inventory system using demand as input argument
+-------------------------------------------------------------------------------- */
+
+SEXP des_sis1_C(SEXP demands, SEXP sR, SEXP SR){
+
+  int s = Rf_asInteger(sR);
+  int S = Rf_asInteger(SR);
+
+  if(s >= S){
+    Rf_error("please set s < S");
+  }
+  if(s < 0 || S < 0){
+    Rf_error("inputs must be positive");
+  }
+
+  /* pointer to demand trace */
+  int* d_ptr = INTEGER(demands);
+  int n = Rf_length(demands);
+
+  /* time interval index */
+  int i = 0;
+  /* current inventory level */
+  int inv = S;
+  /* amount of demand */
+  int dem;
+  /* amount of orders */
+  int ord;
+
+  /* output vector */
+  SEXP output = PROTECT(Rf_allocVector(REALSXP, 5));
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP, 5));
+  Rf_namesgets(output, nms);
+  SET_STRING_ELT(nms, 0, Rf_mkChar("setup"));
+  SET_STRING_ELT(nms, 1, Rf_mkChar("holding"));
+  SET_STRING_ELT(nms, 2, Rf_mkChar("shortage"));
+  SET_STRING_ELT(nms, 3, Rf_mkChar("order"));
+  SET_STRING_ELT(nms, 4, Rf_mkChar("demand"));
+
+  double* output_ptr = REAL(output);
+
+  /* iterate over demands */
+  while(i < n){
+    i++;
+
+    if(inv < s){
+      ord = S - inv;
+      output_ptr[0] += 1.; // setup
+      output_ptr[3] += (double)ord; // order
+    } else {
+      ord = 0;
+    }
+
+    inv += ord; // no delivery lag
+    dem = d_ptr[i-1];
+    output_ptr[4] += (double)dem;
+
+    if(inv > dem){
+      output_ptr[1] += ((double)inv - 0.5 * (double)dem);
+    } else {
+      output_ptr[1] +=  pow((double)inv,2.) / (2.0 * dem);
+      output_ptr[2] +=  pow((double)(dem - inv),2.) / (2.0 * dem);
+    }
+    inv -= dem;
+  }
+
+  /* final time step */
+  if(inv < S){
+    ord = S - inv; // match the final inventory
+    output_ptr[0] += 1.;
+    output_ptr[3] += (double)ord;
+    inv += ord;
+  }
+
+  output_ptr[0] /= (double)n;
+  output_ptr[1] /= (double)n;
+  output_ptr[2] /= (double)n;
+  output_ptr[3] /= (double)n;
+  output_ptr[4] /= (double)n;
+
+  UNPROTECT(2);
+  return output;
+};
