@@ -22,6 +22,8 @@
 #   functions
 -------------------------------------------------------------------------------- */
 
-int gcd(int a, int b);
+SEXP gcd_C(SEXP aR, SEXP bR);
+
+SEXP sieve_C(SEXP NR);
 
 #endif
