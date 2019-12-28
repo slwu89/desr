@@ -66,6 +66,7 @@ SEXP sieve_C(SEXP NR){
     }
   }
 
+  /* number of primes (to fill output) */
   int np = 0;
   for(n=0; n<=N; n++){
     if(prime[n]){
