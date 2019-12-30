@@ -40,12 +40,12 @@ Please note that variables $\{a_{i},b_{i},c_{i}\}$ are absolute (calendar) times
 
 ### Algorithm 1.2.1
 
-Given a set of $\{a_{1},a_{2},...,a_{n}\}$ arrival times and $\{s_{1},s_{2},...,s_{n}\}$ service times, the delays $\{d_{1},d_{2},...,d_{n}\}$ can be computed. The algorithm `des1_2_1` assumes a single-server FIFO system with infinite capacity.
+Given a set of $\{a_{1},a_{2},...,a_{n}\}$ arrival times and $\{s_{1},s_{2},...,s_{n}\}$ service times, the delays $\{d_{1},d_{2},...,d_{n}\}$ can be computed. The algorithm `des_1_2_1` assumes a single-server FIFO system with infinite capacity.
 
 ```{r}
 library(desr)
 
 a <- c(15,47,71,111,123,152,166,226,310,320)
 s <- c(43,36,34,30,38,40,31,29,36,30)
-des1_2_1(a,s)
+des_1_2_1(a,s)
 ```

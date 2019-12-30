@@ -20,11 +20,11 @@
 #' @examples
 #' a <- c(15,47,71,111,123,152,166,226,310,320)
 #' s <- c(43,36,34,30,38,40,31,29,36,30)
-#' des1_2_1(a,s)
-#' @useDynLib desr des1_2_1_C
+#' des_1_2_1(a,s)
+#' @useDynLib desr des_1_2_1_C
 #' @export
-des1_2_1 <- function(a,s){
-  .Call(des1_2_1_C,as.numeric(a),as.numeric(s))
+des_1_2_1 <- function(a,s){
+  .Call(des_1_2_1_C,as.numeric(a),as.numeric(s))
 }
 
 #' program ssq1: a computational model of a single-server FIFO service node with infinite capacity
@@ -63,11 +63,11 @@ des_ssq1 <- function(df){
 #' d <- c(30,15,25,15,45,30,25,15,20,35,20,30)
 #' s <- 20
 #' S <- 60
-#' des1_3_1(d,s,S)
-#' @useDynLib desr des1_3_1_C
+#' des_1_3_1(d,s,S)
+#' @useDynLib desr des_1_3_1_C
 #' @export
-des1_3_1 <- function(demands,s,S){
-  .Call(des1_3_1_C,as.integer(demands),as.integer(s),as.integer(S))
+des_1_3_1 <- function(demands,s,S){
+  .Call(des_1_3_1_C,as.integer(demands),as.integer(s),as.integer(S))
 }
 
 #' program sis1: simulates a simple (s,S) inventory system using trace-driven demand

@@ -14,7 +14,7 @@
 #   algorithm 1.2.1: calculate delays under FIFO with finite capacity
 -------------------------------------------------------------------------------- */
 
-SEXP des1_2_1_C(SEXP arrivals, SEXP services){
+SEXP des_1_2_1_C(SEXP arrivals, SEXP services){
   int n = LENGTH(arrivals);
   if(LENGTH(services) != n){
     error("'arrivals' and 'services' vectors must be the same length\n");
@@ -152,7 +152,7 @@ SEXP des_ssq1_C(SEXP df){
 #   algorithm 1.3.1: compute discrete time evolution of inventory level for simple system (w/back ordering & no delivery lag)
 -------------------------------------------------------------------------------- */
 
-SEXP des1_3_1_C(SEXP demands, SEXP sR, SEXP SR){
+SEXP des_1_3_1_C(SEXP demands, SEXP sR, SEXP SR){
 
   int s = Rf_asInteger(sR);
   int S = Rf_asInteger(SR);
