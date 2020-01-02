@@ -26,4 +26,6 @@ SEXP gcd_C(SEXP aR, SEXP bR);
 
 SEXP sieve_C(SEXP NR);
 
+SEXP approx_factor_C(SEXP aR, SEXP MR);
+
 #endif

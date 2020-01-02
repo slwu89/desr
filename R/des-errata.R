@@ -42,3 +42,23 @@ des_gcd <- function(a,b){
 des_sieve <- function(N){
   .Call(sieve_C,as.integer(N))
 }
+
+#' Approximate factorization
+#'
+#' If m is prime and a > 1 then no factorization of the form m = aq is possible,
+#' but an approximate factorization of the form m = aq+r is possible. q = floor(m/a) and r = m mod a.
+#'
+#' @param a an integer
+#' @param m an integer
+#'
+#' @return a vector of \code{q} and \code{r}
+#'
+#' @examples
+#' m <- as.integer((2^31)-1)
+#' a <- 48271
+#' approx_factor(a,m)
+#' @useDynLib desr approx_factor_C
+#' @export
+approx_factor <- function(a,m){
+  .Call(approx_factor_C,as.integer(a),as.integer(m))
+}

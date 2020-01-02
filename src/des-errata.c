@@ -87,3 +87,29 @@ SEXP sieve_C(SEXP NR){
   UNPROTECT(1);
   return output;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   approximate factorization
+-------------------------------------------------------------------------------- */
+
+SEXP approx_factor_C(SEXP aR, SEXP MR){
+  
+  int a = Rf_asInteger(aR);
+  int m = Rf_asInteger(MR);
+  int q = (int)floor((double)m/(double)a);
+  int r = m % a;
+
+  SEXP output = PROTECT(Rf_allocVector(INTSXP,2));
+
+  INTEGER(output)[0] = q;
+  INTEGER(output)[1] = r;
+
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP, 2));
+  Rf_namesgets(output, nms);
+  SET_STRING_ELT(nms, 0, mkChar("q"));
+  SET_STRING_ELT(nms, 1, mkChar("r"));
+
+  UNPROTECT(2);
+  return output;
+};

@@ -18,5 +18,5 @@ a vector of integers
 Given the prime modulus m and any full-period multiplier a, the following algorithm generates all the full-period multipliers relative to m.
 }
 \examples{
-des_2_1_2(2,13) # should give 6,7,11
+des_2_1_2(2,13) # should give 2,6,7,11
 }
