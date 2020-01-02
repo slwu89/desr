@@ -32,4 +32,13 @@ SEXP des_2_1_1_C(SEXP aR, SEXP mR);
 /* algorithm 2.1.2: given mod m and a full-period multiplier a, determine all other full-period multipliers */
 SEXP des_2_1_2_C(SEXP aR, SEXP mR);
 
+/* algorithm 2.2.1: evaluate ax mod m without producing any integers larger than m-1 */
+SEXP des_2_2_1_C(SEXP xR, SEXP aR, SEXP mR);
+
+/* internal C version of 2.2.1 */
+int g(const int x, const int a, const int m);
+
+/* algorithm 2.2.2: Given the prime modulus m and any associated full-period, modulus- compatible multiplier a the following algorithm generates all the full-period, modulus- compatible multipliers relative to m. */
+SEXP des_2_2_2_C(SEXP aR, SEXP mR);
+
 #endif

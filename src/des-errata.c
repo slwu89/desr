@@ -32,6 +32,17 @@ SEXP gcd_C(SEXP aR, SEXP bR){
   return Rf_ScalarInteger(b);
 }
 
+/* internal C version */
+int gcd(int a, int b){
+  int r = a % b;
+  while(r > 0){
+    a = b;
+    b = r;
+    r = a % b;
+  }
+  return b;
+};
+
 
 /* --------------------------------------------------------------------------------
 #   sieve of Eratosthenes
@@ -93,8 +104,9 @@ SEXP sieve_C(SEXP NR){
 #   approximate factorization
 -------------------------------------------------------------------------------- */
 
+/* R-friendly version for package export */
 SEXP approx_factor_C(SEXP aR, SEXP MR){
-  
+
   int a = Rf_asInteger(aR);
   int m = Rf_asInteger(MR);
   int q = (int)floor((double)m/(double)a);
@@ -112,4 +124,15 @@ SEXP approx_factor_C(SEXP aR, SEXP MR){
 
   UNPROTECT(2);
   return output;
+};
+
+/* faster C-only version for internal use: don't forget to free the result */
+int* approx_factor(const int a, const int M){
+
+  int* out = (int*)calloc(2,sizeof(int));
+
+  out[0] = (int)floor((double)M/(double)a);  // q
+  out[1] = M % a;                            // r
+
+  return out;
 };

@@ -44,3 +44,46 @@ des_2_1_1 <- function(a,m){
 des_2_1_2 <- function(a,m){
   .Call(des_2_1_2_C,as.integer(a),as.integer(m))
 }
+
+#' algorithm 2.2.1: evaluate ax mod m without producing any integers larger than m-1
+#'
+#' If m = aq+r is prime, r < q, and x ∈ Xm, then g(x) = ax mod m can be evaluated as follows without producing any intermediate or final values larger than m − 1 in magnitude.
+#'
+#' @param x value in \{1,2,...,m-1\}
+#' @param a multiplier, a fixed integer
+#' @param m modulus, a fixed large prime integer
+#'
+#' @return value of function
+#'
+#' @examples
+#'  # gives same result
+#'  des_2_2_1(x = 9,a = 3,m = 401)
+#'  (3*9) %% 401
+#'  # to avoid overflow
+#' m <- as.integer((2^31)-1)
+#' a <- 48271
+#' x <- 53423L
+#' (a*x) %% m
+#' des_2_2_1(x,a,m)
+#' @useDynLib desr des_2_2_1_C
+#' @export
+des_2_2_1 <- function(x,a,m){
+  .Call(des_2_2_1_C,as.integer(x),as.integer(a),as.integer(m))
+}
+
+#' algorithm 2.2.2: Given the prime modulus m and any associated full-period, modulus- compatible multiplier a the following algorithm generates all the full-period, modulus- compatible multipliers relative to m.
+#'
+#' Given the prime modulus m and any full-period multiplier a, the following algorithm generates all the full-period multipliers relative to m.
+#'
+#' @param a full-period, modulus-compatible multiplier
+#' @param m modulus, a fixed large prime integer
+#'
+#' @return a vector of all other full-period modulous-compatible multipliers
+#'
+#' @examples
+#' des_2_2_2(3,401) # should give (3, 6, 12, 13, 15, 17, 19, 21, 23, 66)
+#' @useDynLib desr des_2_2_2_C
+#' @export
+des_2_2_2 <- function(a,m){
+  .Call(des_2_2_2_C,as.integer(a),as.integer(m))
+}

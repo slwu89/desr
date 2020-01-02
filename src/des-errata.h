@@ -24,8 +24,12 @@
 
 SEXP gcd_C(SEXP aR, SEXP bR);
 
+int gcd(int a, int b);
+
 SEXP sieve_C(SEXP NR);
 
 SEXP approx_factor_C(SEXP aR, SEXP MR);
+
+int* approx_factor(const int a, const int M);
 
 #endif
