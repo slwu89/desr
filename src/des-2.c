@@ -137,7 +137,7 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
   int m = Rf_asInteger(mR);
 
   /* set up storage for output */
-  int mults_sz = (m - 1)/2;
+  int mults_sz = (m - 1)/2; // there won't be more than this, but we check later on just in case
   int* mults_found = (int*)calloc(mults_sz,sizeof(int));
   int mults_i = 0;
 
