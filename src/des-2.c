@@ -137,7 +137,8 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
   int m = Rf_asInteger(mR);
 
   /* set up storage for output */
-  int* mults_found = (int*)calloc(((m - 1)/2),sizeof(int));
+  int mults_sz = (m - 1)/2;
+  int* mults_found = (int*)calloc(mults_sz,sizeof(int));
   int mults_i = 0;
 
   /* algorithm */
@@ -152,6 +153,9 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
 
     if((m % x < m / x) && (gcd(i,m-1) == 1)){
       /* x is a full-period modulus-compatible multiplier */
+      if(mults_i > mults_sz){
+        mults_found = (int*)realloc(mults_found,mults_sz*2*sizeof(int));
+      }
       mults_found[mults_i] = x;
       mults_i++;
     }
