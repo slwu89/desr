@@ -87,3 +87,24 @@ des_2_2_1 <- function(x,a,m){
 des_2_2_2 <- function(a,m){
   .Call(des_2_2_2_C,as.integer(a),as.integer(m))
 }
+
+
+# --------------------------------------------------------------------------------
+#   Lehman random number generator via external ptr
+# --------------------------------------------------------------------------------
+
+#' make the prng
+#'
+#' @useDynLib desr make_lrng_C
+#' @export
+make_lrng <- function(){
+  .Call(make_lrng_C)
+}
+
+#' sample the prng
+#'
+#' @useDynLib desr random_lrng_C
+#' @export
+random_lrng <- function(ptr){
+  .Call(random_lrng_C,ptr)
+}

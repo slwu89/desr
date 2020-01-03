@@ -41,4 +41,22 @@ int g(const int x, const int a, const int m);
 /* algorithm 2.2.2: Given the prime modulus m and any associated full-period, modulus- compatible multiplier a the following algorithm generates all the full-period, modulus- compatible multipliers relative to m. */
 SEXP des_2_2_2_C(SEXP aR, SEXP mR);
 
+/* --------------------------------------------------------------------------------
+#   Lehman random number generator via external ptr
+-------------------------------------------------------------------------------- */
+
+/* store the state of the RNG */
+typedef struct lrng {
+  long A;     // multiplier
+  long M;     // modulus
+  long Q;     // quotient
+  long R;     // remainder
+  long state;
+  long t;
+} lrng;
+
+SEXP make_lrng_C();
+
+SEXP random_lrng_C(SEXP ptr);
+
 #endif

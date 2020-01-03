@@ -171,3 +171,30 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
   UNPROTECT(1);
   return output;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   Lehman random number generator via external ptr
+-------------------------------------------------------------------------------- */
+
+SEXP make_lrng_C(){
+  lrng* lrng_ptr = malloc(sizeof(struct lrng));
+  lrng_ptr->A = 48271;
+  lrng_ptr->M = 2147483647;
+  lrng_ptr->Q = lrng_ptr->M / lrng_ptr->A;
+  lrng_ptr->R = lrng_ptr->M % lrng_ptr->A;
+  lrng_ptr->state = 1;
+  lrng_ptr->t = 1;
+  return R_MakeExternalPtr(lrng_ptr, R_NilValue, R_NilValue);
+};
+
+SEXP random_lrng_C(SEXP ptr){
+  lrng* lrng_ptr = (lrng*)R_ExternalPtrAddr(ptr);
+  lrng_ptr->t = lrng_ptr->A * (lrng_ptr->state % lrng_ptr->Q) - lrng_ptr->R * (lrng_ptr->state / lrng_ptr->Q);
+  if (lrng_ptr->t > 0){
+    lrng_ptr->state = lrng_ptr->t;
+  } else {
+    lrng_ptr->state = lrng_ptr->t + lrng_ptr->M;
+  }
+  return Rf_ScalarReal(((double) lrng_ptr->state / lrng_ptr->M));
+};
