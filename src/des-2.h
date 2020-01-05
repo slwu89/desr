@@ -55,6 +55,8 @@ typedef struct lrng {
   long t;
 } lrng;
 
+void free_lrng_C(SEXP ptr);
+
 SEXP make_lrng_C();
 
 SEXP random_lrng_C(SEXP ptr);

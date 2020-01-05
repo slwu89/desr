@@ -177,7 +177,16 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
 #   Lehman random number generator via external ptr
 -------------------------------------------------------------------------------- */
 
+/* code to free the memory when the pointer is garbage collected by R */
+void free_lrng_C(SEXP ptr){
+  lrng* lrng_ptr = (lrng*)R_ExternalPtrAddr(ptr);
+  free(lrng_ptr);
+  R_ClearExternalPtr(ptr);
+};
+
 SEXP make_lrng_C(){
+
+  /* allocate the prng state */
   lrng* lrng_ptr = malloc(sizeof(struct lrng));
   lrng_ptr->A = 48271;
   lrng_ptr->M = 2147483647;
@@ -185,7 +194,12 @@ SEXP make_lrng_C(){
   lrng_ptr->R = lrng_ptr->M % lrng_ptr->A;
   lrng_ptr->state = 1;
   lrng_ptr->t = 1;
-  return R_MakeExternalPtr(lrng_ptr, R_NilValue, R_NilValue);
+
+  /* return to R with function to free the memory when ptr goes out of scope */
+  SEXP ptr = PROTECT(R_MakeExternalPtr(lrng_ptr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(ptr,free_lrng_C,TRUE);
+  UNPROTECT(1);
+  return ptr;
 };
 
 SEXP random_lrng_C(SEXP ptr){
