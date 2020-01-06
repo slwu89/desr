@@ -32,4 +32,7 @@ SEXP approx_factor_C(SEXP aR, SEXP MR);
 
 int* approx_factor(const int a, const int M);
 
+/* C-only Lemher RNG */
+double Random(void);
+
 #endif

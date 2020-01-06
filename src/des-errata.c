@@ -136,3 +136,27 @@ int* approx_factor(const int a, const int M){
 
   return out;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   C-only Lemher RNG
+-------------------------------------------------------------------------------- */
+
+double Random(void){
+  
+  const long A = 48271;       /* multiplier */
+  const long M = 2147483647;  /* modulus    */
+  const long Q = M / A;       /* quotient   */
+  const long R = M % A;       /* remainder  */
+  static long state = 1;
+
+  long t = A * (state % Q) - R * (state / Q);
+
+  if (t > 0){
+    state = t;
+  } else {
+    state = t + M;
+  }
+
+  return ((double) state / M);
+};
