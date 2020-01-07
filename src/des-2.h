@@ -41,6 +41,9 @@ int g(const int x, const int a, const int m);
 /* algorithm 2.2.2: Given the prime modulus m and any associated full-period, modulus- compatible multiplier a the following algorithm generates all the full-period, modulus- compatible multipliers relative to m. */
 SEXP des_2_2_2_C(SEXP aR, SEXP mR);
 
+/* algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)  */
+SEXP des_2_5_1_C(SEXP g, SEXP x0, SEXP rho);
+
 /* --------------------------------------------------------------------------------
 #   Lehman random number generator via external ptr
 -------------------------------------------------------------------------------- */

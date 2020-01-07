@@ -174,6 +174,42 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
 
 
 /* --------------------------------------------------------------------------------
+#   algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+-------------------------------------------------------------------------------- */
+
+SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
+
+  int x0 = Rf_asInteger(x0R);
+  // int t = 0;
+  // int s = 0;
+
+  if(!Rf_isFunction(g)){
+    Rf_error("'g' should be a function");
+  }
+  if(!Rf_isEnvironment(rho)){
+    Rf_error("'rho' should be an environment");
+  }
+
+  /* R function call and its argument */
+  SEXP R_fcall, x;
+  PROTECT(R_fcall = lang2(g, R_NilValue));
+  PROTECT(x = allocVector(INTSXP,1));
+
+  SEXP out = PROTECT(Rf_allocVector(INTSXP,10));
+  int* out_ptr = INTEGER(out);
+  out_ptr[0] = x0;
+  for(int i = 1; i < 10; i++){
+    int xi = out_ptr[i-1];
+    INTEGER(x)[0] = xi;
+    SETCADR(R_fcall,x);
+    out_ptr[i] = Rf_asInteger(Rf_eval(R_fcall,rho));
+  }
+
+  UNPROTECT(3);
+  return out;
+};
+
+/* --------------------------------------------------------------------------------
 #   Lehman random number generator via external ptr
 -------------------------------------------------------------------------------- */
 

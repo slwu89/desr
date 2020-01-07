@@ -88,6 +88,25 @@ des_2_2_2 <- function(a,m){
   .Call(des_2_2_2_C,as.integer(a),as.integer(m))
 }
 
+#' algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+#'
+#'
+#'
+#' @param g function
+#' @param x0 initial state
+#'
+#' @return a vector of all other full-period modulous-compatible multipliers
+#'
+#' @examples
+#' midsq <- midsq <- function(x){as.integer(floor((x^2)/100) %% 10000)}
+#' x0 <- 1726
+#' des_2_5_1(midsq,x0)
+#' @useDynLib desr des_2_5_1_C
+#' @export
+des_2_5_1 <- function(g,x0){
+  .Call(des_2_5_1_C,g,as.integer(x0),new.env())
+}
+
 
 # --------------------------------------------------------------------------------
 #   Lehman random number generator via external ptr
