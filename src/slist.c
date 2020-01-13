@@ -15,6 +15,7 @@
 -------------------------------------------------------------------------------- */
 
 void init_int_slist(int_slist* list){
+  list->size = 0;
   list->head = NULL;
   list->tail = NULL;
 };
@@ -41,6 +42,9 @@ void add_int_slist(int_slist* list, int val){
 
   /* now set the new tail equal to the new node */
   list->tail = node;
+
+  /* increment size */
+  list->size++;
 };
 
 /* --------------------------------------------------------------------------------

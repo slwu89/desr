@@ -23,6 +23,7 @@ typedef struct _int_node {
 } int_node ;
 
 typedef struct _int_slist {
+  int       size;
   int_node* head;
   int_node* tail;
 } int_slist ;

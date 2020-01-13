@@ -9,6 +9,8 @@
 
 #include "des-2.h"
 
+#include "slist.h"
+
 
 /* --------------------------------------------------------------------------------
 #   algorithm 2.1.1: determine if multiplier relative to the prime modulus m
@@ -180,8 +182,8 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
 SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
 
   int x0 = Rf_asInteger(x0R);
-  // int t = 0;
-  // int s = 0;
+  int t = 0;
+  int s = 0;
 
   if(!Rf_isFunction(g)){
     Rf_error("'g' should be a function");
@@ -195,18 +197,65 @@ SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
   PROTECT(R_fcall = lang2(g, R_NilValue));
   PROTECT(x = allocVector(INTSXP,1));
 
-  SEXP out = PROTECT(Rf_allocVector(INTSXP,10));
-  int* out_ptr = INTEGER(out);
-  out_ptr[0] = x0;
-  for(int i = 1; i < 10; i++){
-    int xi = out_ptr[i-1];
-    INTEGER(x)[0] = xi;
+  /* initialize the list */
+  int_slist x_lst;
+  init_int_slist(&x_lst);
+  add_int_slist(&x_lst,x0);
+
+  int x_tp1;
+
+  /* while no match found */
+  while(s == t){
+
+    /* evaluate x_{t+1} = g(x_{t}) */
+    INTEGER(x)[0] = x_lst.tail->value;
     SETCADR(R_fcall,x);
-    out_ptr[i] = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+    /* add a state to the list */
+    x_tp1 = Rf_asInteger(Rf_eval(R_fcall,rho));
+    t++;
+
+    /* traverse the list */
+    s = 0;
+    int_node* x_s = x_lst.head;
+    while(x_s->value != x_tp1){
+      x_s = x_s->next;
+      s++;
+    }
   }
 
-  UNPROTECT(3);
+  /* period is the distance between matches */
+  int p = t - s;
+  SEXP out = PROTECT(Rf_allocVector(INTSXP,2));
+  INTEGER(out)[0] = s;
+  INTEGER(out)[1] = p;
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP,2));
+  Rf_namesgets(out, nms);
+  SET_STRING_ELT(nms, 0, mkChar("s"));
+  SET_STRING_ELT(nms, 1, mkChar("p"));
+
+  free_int_slist(&x_lst);
+  UNPROTECT(2);
   return out;
+
+
+  // /* R function call and its argument */
+  // SEXP R_fcall, x;
+  // PROTECT(R_fcall = lang2(g, R_NilValue));
+  // PROTECT(x = allocVector(INTSXP,1));
+  //
+  // SEXP out = PROTECT(Rf_allocVector(INTSXP,10));
+  // int* out_ptr = INTEGER(out);
+  // out_ptr[0] = x0;
+  // for(int i = 1; i < 10; i++){
+  //   int xi = out_ptr[i-1];
+  //   INTEGER(x)[0] = xi;
+  //   SETCADR(R_fcall,x);
+  //   out_ptr[i] = Rf_asInteger(Rf_eval(R_fcall,rho));
+  // }
+  //
+  // UNPROTECT(3);
+  // return out;
 };
 
 /* --------------------------------------------------------------------------------
