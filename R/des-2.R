@@ -99,7 +99,9 @@ des_2_2_2 <- function(a,m){
 #'
 #' @examples
 #' midsq <- midsq <- function(x){as.integer(floor((x^2)/100) %% 10000)}
-#' x0 <- 1726
+#' x0 <- 1726 # this x0 will give (s,p) = (6,4)
+#' x0 <- 6283 # this x0 will give (s,p) = (7,1)
+#' x0 <- 5600 # this x0 will give (s,p) = (0,4)
 #' des_2_5_1(midsq,x0)
 #' @useDynLib desr des_2_5_1_C
 #' @export
