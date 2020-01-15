@@ -134,6 +134,29 @@ des_2_5_2 <- function(g,x0){
   .Call(des_2_5_2_C,g,as.integer(x0),new.env())
 }
 
+#' algorithm 2.5.3 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+#'
+#' This algorithm takes the best features of \code{\link[desr]{des_2_5_1}} and \code{\link[desr]{des_2_5_2}}.
+#'
+#' @param g function
+#' @param x0 initial state
+#'
+#' @return fundamental pair (starting point, period)
+#'
+#' @examples
+#' midsq6 <- function(x){as.integer(floor((x^2)/1000) %% 1000000)}
+#' x0 <- 141138 # this x0 will give (s,p) = (296, 29)
+#' x0 <- 119448 # this x0 will give (s,p) = (428, 210)
+#' x0 <- 586593 # this x0 will give (s,p) = (48, 13)
+#' x0 <- 735812 # this x0 will give (s,p) = (225, 1)
+#' x0 <- 613282 # this x0 will give (s,p) = (469, 20)
+#' des_2_5_3(midsq6,x0)
+#' @useDynLib desr des_2_5_3_C
+#' @export
+des_2_5_3 <- function(g,x0){
+  .Call(des_2_5_3_C,g,as.integer(x0),new.env())
+}
+
 
 # --------------------------------------------------------------------------------
 #   Lehman random number generator via external ptr

@@ -12,13 +12,16 @@ des_2_5_1(g, x0)
 \item{x0}{initial state}
 }
 \value{
-a vector of all other full-period modulous-compatible multipliers
+fundamental pair (starting point, period)
 }
 \description{
-algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+This algorithm trades memory requirements for fast speed; all intermediate
+values are stored in a linked list to minimize calls to \code{g}.
 }
 \examples{
-midsq <- midsq <- function(x){as.integer(floor((x^2)/100) \%\% 10000)}
-x0 <- 1726
+midsq <- function(x){as.integer(floor((x^2)/100) \%\% 10000)}
+x0 <- 1726 # this x0 will give (s,p) = (6,4)
+x0 <- 6283 # this x0 will give (s,p) = (7,1)
+x0 <- 5600 # this x0 will give (s,p) = (0,4)
 des_2_5_1(midsq,x0)
 }

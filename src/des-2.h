@@ -47,6 +47,10 @@ SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho);
 /* algorithm 2.5.2 (high time, low space) Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)  */
 SEXP des_2_5_2_C(SEXP g, SEXP x0R, SEXP rho);
 
+/* algorithm 2.5.3 (best overall) Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)  */
+SEXP des_2_5_3_C(SEXP g, SEXP x0R, SEXP rho);
+
+
 /* --------------------------------------------------------------------------------
 #   Lehman random number generator via external ptr
 -------------------------------------------------------------------------------- */

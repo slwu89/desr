@@ -244,7 +244,7 @@ SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
 
   /* clean up after ourselves */
   free_int_slist(&x_lst);
-  UNPROTECT(2);
+  UNPROTECT(4);
   return out;
 };
 
@@ -311,9 +311,117 @@ SEXP des_2_5_2_C(SEXP g, SEXP x0R, SEXP rho){
   SET_STRING_ELT(nms, 1, Rf_mkChar("p"));
 
   /* clean up after ourselves */
-  UNPROTECT(2);
+  UNPROTECT(4);
   return out;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   algorithm 2.5.3 (high time, low space) Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+-------------------------------------------------------------------------------- */
+
+SEXP des_2_5_3_C(SEXP g, SEXP x0R, SEXP rho){
+
+  if(!Rf_isFunction(g)){
+    Rf_error("'g' should be a function");
+  }
+  if(!Rf_isEnvironment(rho)){
+    Rf_error("'rho' should be an environment");
+  }
+
+  int xq, z, s, xs, p;
+  int x0 = Rf_asInteger(x0R);
+  int q = 1;
+
+  /* R function call and its argument */
+  SEXP R_fcall, xarg;
+  PROTECT(R_fcall = lang2(g, R_NilValue));
+  PROTECT(xarg = allocVector(INTSXP,1));
+  int* xarg_p = INTEGER(xarg);
+
+  /* x.q = g(x.o); */
+  xarg_p[0] = x0;
+  SETCADR(R_fcall,xarg);
+  xq = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+  /* z = g(x.q); */
+  xarg_p[0] = xq;
+  SETCADR(R_fcall,xarg);
+  z = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+  /* step 1: determine q and x.q */
+  while(xq != z){
+    q++;
+
+    /* x.q = g(x.q) */
+    xarg_p[0] = xq;
+    SETCADR(R_fcall,xarg);
+    xq = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+    /* z = g(g(z)) */
+    xarg_p[0] = z;
+    SETCADR(R_fcall,xarg);
+    int z1 = Rf_asInteger(Rf_eval(R_fcall,rho));
+    xarg_p[0] = z1;
+    SETCADR(R_fcall,xarg);
+    z = Rf_asInteger(Rf_eval(R_fcall,rho));
+  }
+
+  s = 0;
+  xs = x0;
+  z = xq;
+
+  /* step 2: determine s and x.s */
+  while(xs != z){
+    s++;
+
+    /* x.s = g(x.s) */
+    xarg_p[0] = xs;
+    SETCADR(R_fcall,xarg);
+    xs = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+    /* z = g(z) */
+    xarg_p[0] = z;
+    SETCADR(R_fcall,xarg);
+    z = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+  }
+
+  /* step 3: determine p */
+  if(2 * s <= q){
+    p = q;
+  } else {
+    p = 1;
+
+    /* z = g(x.s) */
+    xarg_p[0] = xs;
+    SETCADR(R_fcall,xarg);
+    z = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+    while(xs != z){
+      p++;
+
+      /* z = g(z) */
+      xarg_p[0] = z;
+      SETCADR(R_fcall,xarg);
+      z = Rf_asInteger(Rf_eval(R_fcall,rho));
+    }
+  }
+
+  /* build SEXP objects to return to R */
+  SEXP out = PROTECT(Rf_allocVector(INTSXP,2));
+  INTEGER(out)[0] = s;
+  INTEGER(out)[1] = p;
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP,2));
+  Rf_namesgets(out, nms);
+  SET_STRING_ELT(nms, 0, Rf_mkChar("s"));
+  SET_STRING_ELT(nms, 1, Rf_mkChar("p"));
+
+  /* clean up after ourselves */
+  UNPROTECT(4);
+  return out;
+};
+
 
 
 /* --------------------------------------------------------------------------------
