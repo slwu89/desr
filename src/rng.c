@@ -7,6 +7,7 @@
 #
 -------------------------------------------------------------------------------- */
 
+#include "rng.h"
 
 /* initial seed, use 0 < DEFAULT < MODULUS   */
 static long seed = 123456789L; // seed is the state of the generator
@@ -48,4 +49,13 @@ double Uniform(const double a, const double b){
 
 long Equilikely(const long a, const long b){
   return a + (long)((b - a) * Random());
+};
+
+
+/* --------------------------------------------------------------------------------
+#   produce an exponential random variate with rate 1/mu
+-------------------------------------------------------------------------------- */
+
+double Exponential(const double mu){
+  return (-mu * log(1. - Random()));
 };
