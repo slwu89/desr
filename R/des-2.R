@@ -90,15 +90,16 @@ des_2_2_2 <- function(a,m){
 
 #' algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
 #'
-#'
+#' This algorithm trades memory requirements for fast speed; all intermediate
+#' values are stored in a linked list to minimize calls to \code{g}.
 #'
 #' @param g function
 #' @param x0 initial state
 #'
-#' @return a vector of all other full-period modulous-compatible multipliers
+#' @return fundamental pair (starting point, period)
 #'
 #' @examples
-#' midsq <- midsq <- function(x){as.integer(floor((x^2)/100) %% 10000)}
+#' midsq <- function(x){as.integer(floor((x^2)/100) %% 10000)}
 #' x0 <- 1726 # this x0 will give (s,p) = (6,4)
 #' x0 <- 6283 # this x0 will give (s,p) = (7,1)
 #' x0 <- 5600 # this x0 will give (s,p) = (0,4)
@@ -107,6 +108,30 @@ des_2_2_2 <- function(a,m){
 #' @export
 des_2_5_1 <- function(g,x0){
   .Call(des_2_5_1_C,g,as.integer(x0),new.env())
+}
+
+#' algorithm 2.5.2 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+#'
+#' This algorithm trades slow speed for low memory; all intermediate
+#' values are generated on the fly via calls to \code{g}.
+#'
+#' @param g function
+#' @param x0 initial state
+#'
+#' @return fundamental pair (starting point, period)
+#'
+#' @examples
+#' midsq6 <- function(x){as.integer(floor((x^2)/1000) %% 1000000)}
+#' x0 <- 141138 # this x0 will give (s,p) = (296, 29)
+#' x0 <- 119448 # this x0 will give (s,p) = (428, 210)
+#' x0 <- 586593 # this x0 will give (s,p) = (48, 13)
+#' x0 <- 735812 # this x0 will give (s,p) = (225, 1)
+#' x0 <- 613282 # this x0 will give (s,p) = (469, 20)
+#' des_2_5_2(midsq6,x0)
+#' @useDynLib desr des_2_5_2_C
+#' @export
+des_2_5_2 <- function(g,x0){
+  .Call(des_2_5_2_C,g,as.integer(x0),new.env())
 }
 
 

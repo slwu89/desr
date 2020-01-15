@@ -176,7 +176,7 @@ SEXP des_2_2_2_C(SEXP aR, SEXP mR){
 
 
 /* --------------------------------------------------------------------------------
-#   algorithm 2.5.1 Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+#   algorithm 2.5.1 (+time,-space) Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
 -------------------------------------------------------------------------------- */
 
 SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
@@ -244,6 +244,73 @@ SEXP des_2_5_1_C(SEXP g, SEXP x0R, SEXP rho){
 
   /* clean up after ourselves */
   free_int_slist(&x_lst);
+  UNPROTECT(2);
+  return out;
+};
+
+
+/* --------------------------------------------------------------------------------
+#   algorithm 2.5.2 (high time, low space) Given the state transition function g(·) and initial state x0, this algorithm determines the fundamental pair (s, p)
+-------------------------------------------------------------------------------- */
+
+SEXP des_2_5_2_C(SEXP g, SEXP x0R, SEXP rho){
+
+  if(!Rf_isFunction(g)){
+    Rf_error("'g' should be a function");
+  }
+  if(!Rf_isEnvironment(rho)){
+    Rf_error("'rho' should be an environment");
+  }
+
+  int x0 = Rf_asInteger(x0R);
+  int xt = x0;
+  int xs;
+
+  int t = 0;
+  int s = 0;
+
+  /* R function call and its argument */
+  SEXP R_fcall, xarg;
+  PROTECT(R_fcall = lang2(g, R_NilValue));
+  PROTECT(xarg = allocVector(INTSXP,1));
+
+  while(t == s){
+
+    /* evaluate x_{t} = g(x_{t}) */
+    INTEGER(xarg)[0] = xt;
+    SETCADR(R_fcall,xarg);
+    xt = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+    t++;
+    xs = x0;
+    s = 0;
+
+    while(xs != xt){
+
+      /* evaluate x_{s} = g(x_{s}) */
+      INTEGER(xarg)[0] = xs;
+      SETCADR(R_fcall,xarg);
+      xs = Rf_asInteger(Rf_eval(R_fcall,rho));
+
+      s++;
+
+    }
+
+  }
+
+  /* period is the distance between matches */
+  int p = t - s;
+
+  /* build SEXP objects to return to R */
+  SEXP out = PROTECT(Rf_allocVector(INTSXP,2));
+  INTEGER(out)[0] = s;
+  INTEGER(out)[1] = p;
+  SEXP nms = PROTECT(Rf_allocVector(STRSXP,2));
+  Rf_namesgets(out, nms);
+  SET_STRING_ELT(nms, 0, Rf_mkChar("s"));
+  SET_STRING_ELT(nms, 1, Rf_mkChar("p"));
+
+  /* clean up after ourselves */
   UNPROTECT(2);
   return out;
 };
