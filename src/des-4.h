@@ -27,6 +27,8 @@
 /* algorithm 4.1.1: Welford's one pass algorithm */
 SEXP des_4_1_1_C(SEXP sampleR);
 
+/* algorithm 4.2.1: discrete data histrogram */
+SEXP des_4_2_1_C(SEXP aR, SEXP bR, SEXP dataR);
 
 
 #endif

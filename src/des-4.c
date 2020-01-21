@@ -45,3 +45,49 @@ SEXP des_4_1_1_C(SEXP sampleR){
   UNPROTECT(2);
   return out;
 };
+
+
+/* --------------------------------------------------------------------------------
+#   algorithm 4.2.1: discrete data histrogram
+-------------------------------------------------------------------------------- */
+
+SEXP des_4_2_1_C(SEXP aR, SEXP bR, SEXP dataR){
+
+  int a = Rf_asInteger(aR);
+  int b = Rf_asInteger(bR);
+  int ntot = Rf_length(dataR);
+  int* data = INTEGER(dataR);
+
+  SEXP count_r = PROTECT(Rf_allocVector(INTSXP,b-a+1));
+  int* count = INTEGER(count_r);
+  memset(count,0,(b-a+1)*sizeof(int));
+  int n, x;
+
+  int out_lo = 0;
+  int out_hi = 0;
+
+  for(n=0; n<ntot; n++){
+    x = data[n];
+    if((a <= x) && (x <= b)){
+      count[x-a]++;
+    } else if(a > x){
+      out_lo++;
+    } else {
+      out_hi++;
+    }
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(VECSXP,3));
+  SET_VECTOR_ELT(out,0,count_r);
+  SET_VECTOR_ELT(out,1,Rf_ScalarInteger(out_lo));
+  SET_VECTOR_ELT(out,2,Rf_ScalarInteger(out_hi));
+
+  SEXP names = PROTECT(Rf_allocVector(STRSXP,3));
+  SET_STRING_ELT(names,0,Rf_mkChar("count"));
+  SET_STRING_ELT(names,1,Rf_mkChar("outliers_lo"));
+  SET_STRING_ELT(names,2,Rf_mkChar("outliers_hi"));
+
+  Rf_namesgets(out,names);
+  UNPROTECT(3);
+  return out; /* f(x) is (count[x−a] / n) */
+};
